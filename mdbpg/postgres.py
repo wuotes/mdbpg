@@ -80,12 +80,12 @@ class postgres():
             dbresult = list(dbcursor.fetchall())
 
         except psycopg2.ProgrammingError as sql_exception:
-            dbresult = []
+            dbresult = None
 
             print('[{0}] An exception was thrown while trying to run a fetch query on the Postgres database \'{1}\' due to a query error: {2}.'.format(datetime.now().strftime('%m/%d %I:%M %p'), self.dbname, str(sql_exception)), file=stderr)
 
         except Exception as sql_exception:
-            dbresult = []
+            dbresult = None
 
             print('[{0}] An exception was thrown while trying to run a fetch query on the Postgres database \'{1}\': {2}.'.format(datetime.now().strftime('%m/%d %I:%M %p'), self.dbname, str(sql_exception)), file=stderr)
 
@@ -107,7 +107,7 @@ class postgres():
 
         dbconn: Type[psycopg2.connection] = None
         dbcursor: Type[psycopg2.cursor] = None
-        dbresult: bool = False
+        dbresult: bool = True
 
         try:
             dbconn = psycopg2.connect(host=self.hostname, port=self.hostport, database=self.dbname, user=self.username, password=self.password)
@@ -116,12 +116,14 @@ class postgres():
             dbcursor.execute(sql_query)
             dbconn.commit()
 
-            dbresult = True
-
         except psycopg2.ProgrammingError as sql_exception:
+            dbresult = False
+
             print('[{0}] An exception was thrown while trying to run an update query on the Postgres database \'{1}\' due to a query error: {2}.'.format(datetime.now().strftime('%m/%d %I:%M %p'), self.dbname, str(sql_exception)), file=stderr)
 
         except Exception as sql_exception:
+            dbresult = False
+            
             print('[{0}] An exception was thrown while trying to run an update query on the Postgres database \'{1}\': {2}.'.format(datetime.now().strftime('%m/%d %I:%M %p'), self.dbname, str(sql_exception)), file=stderr)
 
         finally:
@@ -186,7 +188,7 @@ class postgres():
 
             sql_query = sql_query[:-1] + r');'
 
-            self.commit(sql_query)
+            result &= self.commit(sql_query)
 
         return result
 
