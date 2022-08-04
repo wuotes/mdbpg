@@ -160,37 +160,27 @@ class postgres():
     ###################################################################
     #     INSERT                                                      #
     ###################################################################
-    def insert(self: r'postgres', table: str, rows: list) -> bool:
-        result: bool = True
+    def insert(self: r'postgres', table: str, row: dict) -> bool:
+        sql_query: str = r'INSERT INTO ' + table + r'('
 
-        if rows is None or 0 == len(rows):
+        if row is None or 0 == len(row.keys()):
             return False
 
-        for row in rows:
-            sql_query: str = r'INSERT INTO ' + table + r'('
+        for column in row.keys():
+            sql_query += column + r','
 
-            if row is None or 0 == len(row.keys()):
-                result = False
+        sql_query = sql_query[:-1] + r')' + '\n' + r'VALUES('
 
-                continue
+        for column in row.keys():
+            if type(row[column]) is str:
+                sql_query += r"'" + str(row[column]) + r"',"
 
-            for column in row.keys():
-                sql_query += column + r','
+            else:
+                sql_query += str(row[column]) + r','
 
-            sql_query = sql_query[:-1] + r')' + '\n' + r'VALUES('
+        sql_query = sql_query[:-1] + r');'
 
-            for column in row.keys():
-                if type(row[column]) is str:
-                    sql_query += r"'" + str(row[column]) + r"',"
-
-                else:
-                    sql_query += str(row[column]) + r','
-
-            sql_query = sql_query[:-1] + r');'
-
-            result &= self.commit(sql_query)
-
-        return result
+        return self.commit(sql_query)
 
     ###################################################################
     #     UPDATE                                                      #

@@ -77,14 +77,14 @@ class mongodb():
     ###################################################################
     #     INSERT                                                      #
     ###################################################################
-    def insert(self: r'mongodb', collection: str, document: list) -> bool:
+    def insert(self: r'mongodb', collection: str, document: dict) -> bool:
         result: bool = True
 
         if r'' == self.connstr:
             return False
 
         try:
-            MongoClient(self.connstr)[str(self.dbname)][collection].insert_many(document)
+            MongoClient(self.connstr)[str(self.dbname)][collection].insert_one(document)
 
         except Exception as mongodb_exception:
             result = False

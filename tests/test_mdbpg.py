@@ -47,20 +47,18 @@ def test_pgdb_commit_fetch():
 
 def test_pgdb_find_insert():
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
-    assert pgdb.insert(r'TESTTBL', [{r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}]) is True
-    assert pgdb.insert(r'TESTTBL', [{r'testvar1': False, r'testvar2': 3, r'testvar3': r'test1'}, {r'testvar1': False, r'testvar2': 7, r'testvar3': r'test1'}])
-    assert (1 == len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
-    assert (2 == len(pgdb.find(r'TESTTBL', {r'testvar1': False}))) is True
+    assert pgdb.insert(r'TESTTBL', {r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}) is True
+    assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
 
 def test_pgdb_find_update():
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar2': 13}))) is True
-    assert (1 == len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
+    assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
     assert pgdb.update(r'TESTTBL', {r'testvar1': True}, {r'testvar2': 13}) is True
-    assert (1 == len(pgdb.find(r'TESTTBL', {r'testvar2': 13}))) is True
+    assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar2': 13}))) is True
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
 
 def test_pgdb_find_delete():
-    assert (1 == len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
+    assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
     assert pgdb.delete(r'TESTTBL', {r'testvar3': r'test1'}) is True
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
 
@@ -69,7 +67,7 @@ def test_pgdb_bad_commit_fetch():
     assert bad_pgdb.fetch(r'SELECT * FROM TESTTBL') is None
 
 def test_pgdb_bad_insert():
-    assert bad_pgdb.insert(r'TESTTBL', [{r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}]) is False
+    assert bad_pgdb.insert(r'TESTTBL', {r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}) is False
     
 def test_pgdb_bad_update():
     assert bad_pgdb.update(r'TESTTBL', {r'testvar1': True}, {r'testvar2': 13}) is False
@@ -85,8 +83,7 @@ def test_mdb_delete_find():
     assert (0 == len(mdb.find(r'test', {}))) is True
 
 def test_mdb_insert_find():
-    assert mdb.insert(r'test', [{r'testval1': True, r'testval2': 43, r'testval3': r'test'}]) is True
-    assert mdb.insert(r'test', [{r'testval1': False, r'testval2': 3, r'testval3': r'dog'}, {r'testval1': False, r'testval2': 7, r'testval3': r'cat'}])
+    assert mdb.insert(r'test', {r'testval1': True, r'testval2': 43, r'testval3': r'test'}) is True
     assert (0 < len(mdb.find(r'test', {r'testval1': True}))) is True
 
 def test_mdb_update_find():
@@ -96,5 +93,4 @@ def test_mdb_update_find():
 
 def test_mdb_cleanup():
     assert mdb.delete(r'test', {r'testval1': True}) is True
-    assert mdb.delete(r'test', {r'testval1': False}) is True
     assert (0 == len(mdb.find(r'test', {}))) is True
