@@ -96,11 +96,11 @@ def test_mdb_cleanup():
     assert (0 == len(mdb.find(r'test', {}))) is True
 
 def test_mdb_bad_insert():
+    bad_mdb.connstr = r''
     assert bad_mdb.insert(r'test', {r'testval1': True, r'testval2': 43, r'testval3': r'test'}) is False
 
 def test_mdb_bad_find():
-    result = mdb.find(r'test', {})
-    assert result is None or 0 == len(result)
+    assert bad_mdb.find(r'test', {}) is None
 
 def test_mdb_bad_update():
     assert bad_mdb.update(r'test', {}, {r'testval3': r'changed'}) is False
@@ -113,8 +113,7 @@ def test_mdb_fake_insert():
     assert bad_mdb.insert(r'test', {r'testval1': True, r'testval2': 43, r'testval3': r'test'}) is False
 
 def test_mdb_fake_find():
-    result = mdb.find(r'test', {})
-    assert result is None or 0 == len(result)
+    assert bad_mdb.find(r'test', {}) is None
 
 def test_mdb_fake_update():
     assert bad_mdb.update(r'test', {}, {r'testval3': r'changed'}) is False
