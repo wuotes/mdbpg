@@ -18,7 +18,7 @@ from mtoml import mtoml
 
 sys.path.append(r'.')
 
-import mdbpq
+import mdbpg
 
 #######################################################################
 #                                                                     #
@@ -28,12 +28,12 @@ import mdbpq
 mtoml.set_dir(r'./tests/')  # set mtoml's working directory
 
 if os.path.exists(mtoml.get_dir() + r'database.toml') is True:
-    pgdb = mdbpq.postgres()
-    mdb = mdbpq.mongodb()
+    pgdb = mdbpg.postgres()
+    mdb = mdbpg.mongodb()
 
 else:
-    pgdb = mdbpq.postgres(use_env_vars=True)
-    mdb = mdbpq.mongodb(use_env_vars=True)
+    pgdb = mdbpg.postgres(use_env_vars=True)
+    mdb = mdbpg.mongodb(use_env_vars=True)
 
 def test_pgdb_commit_fetch():
     assert pgdb.commit(r'DELETE FROM TESTTBL') is True

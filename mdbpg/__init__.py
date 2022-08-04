@@ -8,5 +8,5 @@
 
 __all__ = (r'mongodb', r'postgres')
 
-from mdbpq.mongodb import mongodb
-from mdbpq.postgres import postgres
+from mdbpg.mongodb import mongodb
+from mdbpg.postgres import postgres
