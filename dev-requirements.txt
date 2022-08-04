@@ -1,0 +1,7 @@
+python_version>='3.9'
+mtoml==1.1.2
+psycopg2>=2.9.3
+pymongo>=4.1.1
+dnspython>=2.2.1
+pytest==7.1.2
+pytest-cov==3.0.0
