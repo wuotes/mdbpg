@@ -70,6 +70,8 @@ class mongodb():
             dbresult = list(MongoClient(self.connstr)[str(self.dbname)][collection].find(criteria))
 
         except Exception as mongodb_exception:
+            dbresult = None
+
             print('[{0}] An exception was thrown while trying to find a document from the collection \'{1}\' using MongoDB: {2}'.format(datetime.now().strftime('%m/%d %I:%M %p'), collection, str(mongodb_exception)), file=stderr)
 
         return dbresult

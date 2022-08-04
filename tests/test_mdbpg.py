@@ -94,3 +94,30 @@ def test_mdb_update_find():
 def test_mdb_cleanup():
     assert mdb.delete(r'test', {r'testval1': True}) is True
     assert (0 == len(mdb.find(r'test', {}))) is True
+
+def test_mdb_bad_insert():
+    assert bad_mdb.insert(r'test', {r'testval1': True, r'testval2': 43, r'testval3': r'test'}) is False
+
+def test_mdb_bad_find():
+    result = mdb.find(r'test', {})
+    assert result is None or 0 == len(result)
+
+def test_mdb_bad_update():
+    assert bad_mdb.update(r'test', {}, {r'testval3': r'changed'}) is False
+
+def test_mdb_bad_delete():
+    assert bad_mdb.delete(r'test', {}) is False
+
+def test_mdb_fake_insert():
+    bad_mdb.connstr = r'TEST-FAKE'
+    assert bad_mdb.insert(r'test', {r'testval1': True, r'testval2': 43, r'testval3': r'test'}) is False
+
+def test_mdb_fake_find():
+    result = mdb.find(r'test', {})
+    assert result is None or 0 == len(result)
+
+def test_mdb_fake_update():
+    assert bad_mdb.update(r'test', {}, {r'testval3': r'changed'}) is False
+
+def test_mdb_fake_delete():
+    assert bad_mdb.delete(r'test', {}) is False
