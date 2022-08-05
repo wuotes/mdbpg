@@ -28,18 +28,18 @@ import mdbpg
 mtoml.set_dir(r'./tests/')  # set mtoml's working directory
 
 if os.path.exists(mtoml.get_dir() + r'database.toml') is True:
-    pgdb = mdbpg.postgres()
-    mdb = mdbpg.mongodb()
+    pgdb = mdbpg.postgres(max_conns=0)
+    mdb = mdbpg.mongodb(max_conns=0)
 
-    bad_pgdb = mdbpg.postgres(use_env_vars=True)
-    bad_mdb = mdbpg.mongodb(use_env_vars=True)
+    bad_pgdb = mdbpg.postgres(max_conns=10, use_env_vars=True)
+    bad_mdb = mdbpg.mongodb(max_conns=10, use_env_vars=True)
 
 else:
-    pgdb = mdbpg.postgres(use_env_vars=True)
-    mdb = mdbpg.mongodb(use_env_vars=True)
+    pgdb = mdbpg.postgres(max_conns=0, use_env_vars=True)
+    mdb = mdbpg.mongodb(max_conns=0, use_env_vars=True)
 
-    bad_pgdb = mdbpg.postgres()
-    bad_mdb = mdbpg.mongodb()
+    bad_pgdb = mdbpg.postgres(max_conns=10)
+    bad_mdb = mdbpg.mongodb(max_conns=10)
 
 def test_pgdb_commit_fetch():
     assert pgdb.commit(r'DELETE FROM TESTTBL') is True

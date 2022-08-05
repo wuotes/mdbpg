@@ -13,6 +13,7 @@
 #######################################################################
 from datetime import datetime
 from sys import stderr
+from threading import Semaphore
 from typing import Type
 
 import mtoml
@@ -29,7 +30,13 @@ class postgres():
     ###################################################################
     #     CONSTRUCTOR, INSTANCE VARIABLES                             #
     ###################################################################
-    def __init__(self: r'postgres', use_env_vars: bool = False):
+    def __init__(self: r'postgres', max_conns: int = 10, use_env_vars: bool = False):
+        if 0 >= max_conns:
+            self.sema = Semaphore(10)
+        
+        else:
+            self.sema = Semaphore(max_conns)
+
         if use_env_vars is True:
             self.username: str = os.getenv(r'POSTGRES_USERNAME')
             self.password: str = os.getenv(r'POSTGRES_PASSWORD')
@@ -65,6 +72,8 @@ class postgres():
         dbcursor: Type[psycopg2.cursor] = None
         dbresult: list = []
 
+        self.sema.acquire()
+
         try:
             dbconn = psycopg2.connect(host=str(self.hostname), database=str(self.dbname), user=str(self.username), password=str(self.password))
             dbcursor = dbconn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -84,6 +93,8 @@ class postgres():
             if dbconn:
                 dbconn.close()
 
+        self.sema.release()
+
         return dbresult
 
     ###################################################################
@@ -96,6 +107,8 @@ class postgres():
         dbconn: Type[psycopg2.connection] = None
         dbcursor: Type[psycopg2.cursor] = None
         dbresult: bool = True
+
+        self.sema.acquire()
 
         try:
             dbconn = psycopg2.connect(host=self.hostname, database=self.dbname, user=self.username, password=self.password)
@@ -115,6 +128,8 @@ class postgres():
 
             if dbconn:
                 dbconn.close()
+
+        self.sema.release()
 
         return dbresult
 

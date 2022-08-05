@@ -14,6 +14,7 @@
 from datetime import datetime
 from pymongo import MongoClient
 from sys import stderr
+from threading import Semaphore
 
 import mtoml
 import os
@@ -27,7 +28,13 @@ class mongodb():
     ###################################################################
     #     CONSTRUCTOR, INSTANCE VARIABLES                             #
     ###################################################################
-    def __init__(self: r'mongodb', use_env_vars: bool = False) -> None:
+    def __init__(self: r'mongodb', max_conns: int = 10, use_env_vars: bool = False) -> None:
+        if 0 >= max_conns:
+            self.sema = Semaphore(10)
+        
+        else:
+            self.sema = Semaphore(max_conns)
+
         if use_env_vars is True:
             self.username: str = os.getenv(r'MONGODB_USERNAME')
             self.password: str = os.getenv(r'MONGODB_PASSWORD')
@@ -66,6 +73,8 @@ class mongodb():
         if r'' == self.connstr:
             return dbresult
 
+        self.sema.acquire()
+
         try:
             dbresult = list(MongoClient(self.connstr)[str(self.dbname)][collection].find(criteria))
 
@@ -73,6 +82,8 @@ class mongodb():
             dbresult = None
 
             print('[{0}] An exception was thrown while trying to find a document from the collection \'{1}\' using MongoDB: {2}'.format(datetime.now().strftime('%m/%d %I:%M %p'), collection, str(mongodb_exception)), file=stderr)
+
+        self.sema.release()
 
         return dbresult
 
@@ -85,6 +96,8 @@ class mongodb():
         if r'' == self.connstr:
             return False
 
+        self.sema.acquire()
+
         try:
             MongoClient(self.connstr)[str(self.dbname)][collection].insert_one(document)
 
@@ -92,6 +105,8 @@ class mongodb():
             result = False
 
             print('[{0}] An exception was thrown while trying to insert a document from the collection \'{1}\' using MongoDB: {2}'.format(datetime.now().strftime('%m/%d %I:%M %p'), collection, str(mongodb_exception)), file=stderr)
+
+        self.sema.release()
 
         return result
 
@@ -104,6 +119,8 @@ class mongodb():
         if r'' == self.connstr:
             return False
 
+        self.sema.acquire()
+
         try:
             MongoClient(self.connstr)[str(self.dbname)][collection].update_many(criteria, { r'$set': changes })
 
@@ -111,6 +128,8 @@ class mongodb():
             result = False
 
             print('[{0}] An exception was thrown while trying to update a document from the collection \'{1}\' using MongoDB: {2}'.format(datetime.now().strftime('%m/%d %I:%M %p'), collection, str(mongodb_exception)), file=stderr)
+
+        self.sema.release()
 
         return result
 
@@ -123,6 +142,8 @@ class mongodb():
         if r'' == self.connstr:
             return False
 
+        self.sema.acquire()
+
         try:
             MongoClient(self.connstr)[str(self.dbname)][collection].delete_many(criteria)
 
@@ -130,5 +151,7 @@ class mongodb():
             result = False
 
             print('[{0}] An exception was thrown while trying to delete a document from the collection \'{1}\' using MongoDB: {2}'.format(datetime.now().strftime('%m/%d %I:%M %p'), collection, str(mongodb_exception)), file=stderr)
+
+        self.sema.release()
 
         return result
