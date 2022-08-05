@@ -86,6 +86,7 @@ def test_pgdb_bad_delete():
     assert bad_pgdb.delete(r'TESTTBL', {r'testvar3': r'test1'}) is False
 
 def test_pgdb_fake_commit_fetch():
+    bad_pgdb.loaded = True
     bad_pgdb.hostname = r'TEST-FAKE'
     assert bad_pgdb.commit(r'DELETE FROM TESTTBL') is False
     assert bad_pgdb.commit(r'TEST FAKE') is False
