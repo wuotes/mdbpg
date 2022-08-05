@@ -46,20 +46,24 @@ def test_pgdb_commit_fetch():
     assert (0 == len(pgdb.fetch(r'SELECT * FROM TESTTBL'))) is True
 
 def test_pgdb_find_insert():
-    assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
+    assert (0 == len(pgdb.find(r'TESTTBL', {}))) is True
     assert pgdb.insert(r'TESTTBL', {r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}) is True
     assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
+    assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar3': r'test1'}))) is True
 
 def test_pgdb_find_update():
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar2': 13}))) is True
     assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
     assert pgdb.update(r'TESTTBL', {r'testvar1': True}, {r'testvar2': 13}) is True
+    assert pgdb.update(r'TESTTBL', {r'testvar3': r'test1'}, {r'testvar3': r'test1'}) is True
     assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar2': 13}))) is True
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
 
 def test_pgdb_find_delete():
     assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
     assert pgdb.delete(r'TESTTBL', {r'testvar3': r'test1'}) is True
+    assert pgdb.delete(r'TESTTBL', {r'testvar1': True}) is True
+    assert pgdb.delete(r'TESTTBL', {}) is False
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar1': True}))) is True
 
 def test_pgdb_bad_commit_fetch():
@@ -68,6 +72,7 @@ def test_pgdb_bad_commit_fetch():
 
 def test_pgdb_bad_insert():
     assert bad_pgdb.insert(r'TESTTBL', {r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}) is False
+    assert bad_pgdb.insert(r'TESTTBL', {}) is False
     
 def test_pgdb_bad_update():
     assert bad_pgdb.update(r'TESTTBL', {r'testvar1': True}, {r'testvar2': 13}) is False
