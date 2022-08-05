@@ -56,6 +56,8 @@ def test_pgdb_find_update():
     assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
     assert pgdb.update(r'TESTTBL', {r'testvar1': True}, {r'testvar2': 13}) is True
     assert pgdb.update(r'TESTTBL', {r'testvar3': r'test1'}, {r'testvar3': r'test1'}) is True
+    assert pgdb.update(r'TESTTBL', {}, {r'testvar3': r'test1'}) is True
+    assert pgdb.update(r'TESTTBL', {r'testvar3': r'test1'}, {}) is False
     assert (0 < len(pgdb.find(r'TESTTBL', {r'testvar2': 13}))) is True
     assert (0 == len(pgdb.find(r'TESTTBL', {r'testvar2': 43}))) is True
 
@@ -86,7 +88,9 @@ def test_pgdb_bad_delete():
 def test_pgdb_fake_commit_fetch():
     bad_pgdb.hostname = r'TEST-FAKE'
     assert bad_pgdb.commit(r'DELETE FROM TESTTBL') is False
+    assert bad_pgdb.commit(r'TEST FAKE') is False
     assert bad_pgdb.fetch(r'SELECT * FROM TESTTBL') is None
+    assert bad_pgdb.fetch(r'TEST FAKE') is None
 
 def test_pgdb_fake_insert():
     assert bad_pgdb.insert(r'TESTTBL', {r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}) is False
