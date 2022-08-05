@@ -34,7 +34,6 @@ class postgres():
             self.username: str = os.getenv(r'POSTGRES_USERNAME')
             self.password: str = os.getenv(r'POSTGRES_PASSWORD')
             self.hostname: str = os.getenv(r'POSTGRES_HOSTNAME')
-            self.hostport: str = r''
             self.dbname: str = os.getenv(r'POSTGRES_DBNAME')
 
         else:
@@ -45,10 +44,9 @@ class postgres():
             self.username: str = mtoml.get(r'database', r'postgres_username')
             self.password: str = mtoml.get(r'database', r'postgres_password')
             self.hostname: str = mtoml.get(r'database', r'postgres_hostname')
-            self.hostport: str = mtoml.get(r'database', r'postgres_hostport')
             self.dbname: str = mtoml.get(r'database', r'postgres_dbname')
 
-        if self.username is None or self.password is None or self.hostname is None or self.hostport is None or self.dbname is None:
+        if self.username is None or self.password is None or self.hostname is None or self.dbname is None:
             self.loaded = False
 
             print('[{0}] Failed to load the configuration for Postgres.'.format(datetime.now().strftime('%m/%d %I:%M %p')), file=stderr)
@@ -68,21 +66,11 @@ class postgres():
         dbresult: list = []
 
         try:
-            if r'' == str(self.hostport):
-                dbconn = psycopg2.connect(host=str(self.hostname), database=str(self.dbname), user=str(self.username), password=str(self.password))
-
-            else:
-                dbconn = psycopg2.connect(host=str(self.hostname), port=int(self.hostport), database=str(self.dbname), user=str(self.username), password=str(self.password))
-
+            dbconn = psycopg2.connect(host=str(self.hostname), database=str(self.dbname), user=str(self.username), password=str(self.password))
             dbcursor = dbconn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             dbcursor.execute(sql_query)
             dbresult = list(dbcursor.fetchall())
-
-        except psycopg2.ProgrammingError as sql_exception:
-            dbresult = None
-
-            print('[{0}] An exception was thrown while trying to run a fetch query on the Postgres database \'{1}\' due to a query error: {2}.'.format(datetime.now().strftime('%m/%d %I:%M %p'), self.dbname, str(sql_exception)), file=stderr)
 
         except Exception as sql_exception:
             dbresult = None
@@ -110,16 +98,11 @@ class postgres():
         dbresult: bool = True
 
         try:
-            dbconn = psycopg2.connect(host=self.hostname, port=self.hostport, database=self.dbname, user=self.username, password=self.password)
+            dbconn = psycopg2.connect(host=self.hostname, database=self.dbname, user=self.username, password=self.password)
             dbcursor = dbconn.cursor()
 
             dbcursor.execute(sql_query)
             dbconn.commit()
-
-        except psycopg2.ProgrammingError as sql_exception:
-            dbresult = False
-
-            print('[{0}] An exception was thrown while trying to run an update query on the Postgres database \'{1}\' due to a query error: {2}.'.format(datetime.now().strftime('%m/%d %I:%M %p'), self.dbname, str(sql_exception)), file=stderr)
 
         except Exception as sql_exception:
             dbresult = False

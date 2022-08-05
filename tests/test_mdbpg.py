@@ -78,6 +78,23 @@ def test_pgdb_bad_find():
 def test_pgdb_bad_delete():
     assert bad_pgdb.delete(r'TESTTBL', {r'testvar3': r'test1'}) is False
 
+def test_pgdb_fake_commit_fetch():
+    bad_pgdb.hostname = r'TEST-FAKE'
+    assert bad_pgdb.commit(r'DELETE FROM TESTTBL') is False
+    assert bad_pgdb.fetch(r'SELECT * FROM TESTTBL') is None
+
+def test_pgdb_fake_insert():
+    assert bad_pgdb.insert(r'TESTTBL', {r'testvar1': True, r'testvar2': 43, r'testvar3': r'test1'}) is False
+    
+def test_pgdb_fake_update():
+    assert bad_pgdb.update(r'TESTTBL', {r'testvar1': True}, {r'testvar2': 13}) is False
+
+def test_pgdb_fake_find():
+    assert bad_pgdb.find(r'TESTTBL', {r'testvar1': True}) is None
+
+def test_pgdb_fake_delete():
+    assert bad_pgdb.delete(r'TESTTBL', {r'testvar3': r'test1'}) is False
+
 def test_mdb_delete_find():
     assert mdb.delete(r'test', {}) is True
     assert (0 == len(mdb.find(r'test', {}))) is True
