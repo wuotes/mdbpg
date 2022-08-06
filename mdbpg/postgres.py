@@ -30,7 +30,7 @@ class postgres():
     ###################################################################
     #     CONSTRUCTOR, INSTANCE VARIABLES                             #
     ###################################################################
-    def __init__(self: r'postgres', max_conns: int = 10, use_env_vars: bool = False):
+    def __init__(self: r'postgres', max_conns: int = 10, use_env_vars: bool = True):
         if 0 >= max_conns:
             self.sema = Semaphore(10)
         

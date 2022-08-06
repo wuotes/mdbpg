@@ -28,18 +28,20 @@ import mdbpg
 mtoml.set_dir(r'./tests/')  # set mtoml's working directory
 
 if os.path.exists(mtoml.get_dir() + r'database.toml') is True:
-    pgdb = mdbpg.postgres(max_conns=0)
-    mdb = mdbpg.mongodb(max_conns=0)
-
-    bad_pgdb = mdbpg.postgres(max_conns=10, use_env_vars=True)
-    bad_mdb = mdbpg.mongodb(max_conns=10, use_env_vars=True)
-
-else:
-    pgdb = mdbpg.postgres(max_conns=0, use_env_vars=True)
-    mdb = mdbpg.mongodb(max_conns=0, use_env_vars=True)
+    # this is just so I can run tests on my local device without
+    # setting up env vars
+    pgdb = mdbpg.postgres(max_conns=0, use_env_vars=False)
+    mdb = mdbpg.mongodb(max_conns=0, use_env_vars=False)
 
     bad_pgdb = mdbpg.postgres(max_conns=10)
     bad_mdb = mdbpg.mongodb(max_conns=10)
+
+else:
+    pgdb = mdbpg.postgres(max_conns=0)
+    mdb = mdbpg.mongodb(max_conns=0)
+
+    bad_pgdb = mdbpg.postgres(max_conns=10, use_env_vars=False)
+    bad_mdb = mdbpg.mongodb(max_conns=10, use_env_vars=False)
 
 def test_pgdb_commit_fetch():
     assert pgdb.commit(r'DELETE FROM TESTTBL') is True

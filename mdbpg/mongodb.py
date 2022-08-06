@@ -28,7 +28,7 @@ class mongodb():
     ###################################################################
     #     CONSTRUCTOR, INSTANCE VARIABLES                             #
     ###################################################################
-    def __init__(self: r'mongodb', max_conns: int = 10, use_env_vars: bool = False) -> None:
+    def __init__(self: r'mongodb', max_conns: int = 10, use_env_vars: bool = True) -> None:
         if 0 >= max_conns:
             self.sema = Semaphore(10)
         

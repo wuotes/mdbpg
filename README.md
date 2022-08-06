@@ -1,5 +1,5 @@
 # mdbpq
-A Python module that can handle both Postgres and MongoDB queries in an interchangable manner.
+Handle both Postgres and MongoDB queries in an interchangable manner.
 
 `pip install mdbpg`
 
@@ -10,9 +10,9 @@ import mdbpg
 
 # create an instance for Postgres or MongoDB through mdbpg
 # max_conns and use_env_vars are both optional parameters
-# max_conns defaults to 10 and use_env_vars defaults to False
-# mdbpg will try to load a toml config named 'database.toml'
-# with the relevant fields using mtoml
+# max_conns defaults to 10 and use_env_vars defaults to True
+# if use_env_vars is False then mdbpg will try to load a toml
+# config named 'database.toml' using mtoml instead
 pgdb = mdbpg.postgres(max_conns=5, use_env_vars=True)
 mdb = mdbpg.mongodb(max_conns=50, use_env_vars=True)
 
