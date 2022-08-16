@@ -1,5 +1,5 @@
 python_version>='3.9'
-mtoml==1.1.2
+mtoml==1.2.0
 psycopg2>=2.9.3
 pymongo>=4.1.1
 dnspython>=2.2.1

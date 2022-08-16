@@ -44,14 +44,14 @@ class postgres():
             self.dbname: str = os.getenv(r'POSTGRES_DBNAME')
 
         else:
-            if mtoml.is_loaded(r'database') is False:
-                if mtoml.load(r'database') is False:
+            if mtoml.is_loaded(config = r'database') is False:
+                if mtoml.load(config = r'database') is False:
                     print('[{0}] Failed to load the \'database\' configuration.'.format(datetime.now().strftime('%m/%d %I:%M %p')), file=stderr)
 
-            self.username: str = mtoml.get(r'database', r'postgres_username')
-            self.password: str = mtoml.get(r'database', r'postgres_password')
-            self.hostname: str = mtoml.get(r'database', r'postgres_hostname')
-            self.dbname: str = mtoml.get(r'database', r'postgres_dbname')
+            self.username: str = mtoml.get(config = r'database', group = r'postgres', field = r'username')
+            self.password: str = mtoml.get(config = r'database', group = r'postgres', field = r'password')
+            self.hostname: str = mtoml.get(config = r'database', group = r'postgres', field = r'hostname')
+            self.dbname: str = mtoml.get(config = r'database', group = r'postgres', field = r'dbname')
 
         if self.username is None or self.password is None or self.hostname is None or self.dbname is None:
             self.loaded = False

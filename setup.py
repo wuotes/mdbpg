@@ -18,7 +18,7 @@ def read_file(filename: str) -> str:
 
 setup(
     name=r'mdbpg',
-    version=r'0.2.0',
+    version=r'0.2.1',
     description=r'Handle both Postgres and MongoDB queries in an interchangable manner.',
     long_description=read_file(r'./README.md'),
     long_description_content_type=r'text/markdown',
@@ -29,7 +29,7 @@ setup(
     license=r'Mozilla Public License 2.0',
     python_requires=r'>=3.9',
     packages=[r'mdbpg'],
-    install_requires=[r'mtoml>=1.1.2',
+    install_requires=[r'mtoml>=1.2.0',
                       r'psycopg2>=2.9.3',
                       r'pymongo>=4.1.1',
                       r'dnspython>=2.2.1',

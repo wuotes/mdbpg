@@ -43,15 +43,15 @@ class mongodb():
             self.dbname: str = os.getenv(r'MONGODB_DBNAME')
 
         else:
-            if mtoml.is_loaded(r'database') is False:
-                if mtoml.load(r'database') is False:
+            if mtoml.is_loaded(config = r'database') is False:
+                if mtoml.load(config = r'database') is False:
                     print('[{0}] Failed to load the \'database\' configuration.'.format(datetime.now().strftime('%m/%d %I:%M %p')), file=stderr)
 
-            self.username: str = mtoml.get(r'database', r'mongodb_username')
-            self.password: str = mtoml.get(r'database', r'mongodb_password')
-            self.hostname: str = mtoml.get(r'database', r'mongodb_hostname')
-            self.authsrc: str = mtoml.get(r'database', r'mongodb_authsrc')
-            self.dbname: str = mtoml.get(r'database', r'mongodb_dbname')
+            self.username: str = mtoml.get(config = r'database', group = r'mongodb', field = r'username')
+            self.password: str = mtoml.get(config = r'database', group = r'mongodb', field = r'password')
+            self.hostname: str = mtoml.get(config = r'database', group = r'mongodb', field = r'hostname')
+            self.authsrc: str = mtoml.get(config = r'database', group = r'mongodb', field = r'authsrc')
+            self.dbname: str = mtoml.get(config = r'database', group = r'mongodb', field = r'dbname')
 
         if self.username is None or self.password is None or self.hostname is None or self.authsrc is None or self.dbname is None:
             self.connstr = r''

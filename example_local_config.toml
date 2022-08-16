@@ -1,0 +1,12 @@
+[postgres]
+username = "admin"
+password = "abc123"
+hostname = "db.domain.com"
+dbname = "default"
+
+[mongodb]
+username = "admin"
+password = "abc123"
+hostname = "db.domain.com"
+authsrc = ""
+dbname = "default"
